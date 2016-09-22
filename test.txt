@@ -1,0 +1,150 @@
+package valtech;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+public class Valtechwebsite {
+
+	WebDriver driver;
+
+
+	// This method will invoke the Internet Explorer Browser
+	public void LaunchIEBrowser()
+	{
+		String IEDriverPath="C:\\Test\\Test\\SampleSelenium\\IEDriverServer.exe";
+		System.setProperty("webdriver.ie.driver",""+ IEDriverPath +"");
+		driver = new InternetExplorerDriver();
+		//Wait for 2 second
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		driver.get("valtech.com");
+
+
+	}
+
+
+	//this method will verify latest news section is displayed
+	public void LatestNews()
+	{
+		JavascriptExecutor je = (JavascriptExecutor) driver;
+
+		WebElement LatestNews = driver.findElement(By.xpath("//*[@id='container']/div[2]/div[3]/div[1]/header/h2"));
+		//Scrole down the page untill LatestNews text will not appear on the page
+		je.executeScript("arguments[0].scrollIntoView(true);",LatestNews);
+		//Get Latest News text
+		String LatestNewstext = LatestNews.getText();
+		System.out.println(LatestNewstext);
+
+		if(LatestNewstext.contentEquals("LATEST NEWS"))
+		{
+			System.out.println("Latest News section is displayed");
+		}
+		else
+		{
+			System.out.println("Latest News section is not displayed");
+		}
+	}
+
+	//This Method will navigate to Cases section and will verify H1 tag Cases is displayed
+
+	public void Cases()
+	{
+		driver.findElement(By.id("navigation-toggle-button")).click();
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		driver.findElement(By.xpath("//*[@id='navigationMenuWrapper']/div/div[1]/ul/li[1]/a")).click();
+
+		String Casestext =driver.findElement(By.xpath("//*[@id='container']/header/h1")).getText();
+		System.out.println("H1 tag is displaying as"  + Casestext);
+
+
+	}
+	//This Method will navigate to Services section and will verify H1 tag Services is displayed
+	public void Services()
+	{
+		driver.findElement(By.id("navigation-toggle-button")).click();
+		driver.findElement(By.xpath("//*[@id='navigationMenuWrapper']/div/div[1]/ul/li[3]/a")).click();
+
+		String Servicestext =driver.findElement(By.xpath("//*[@id='container']/section/header/h1")).getText();
+		System.out.println("H1 tag is displaying as"  + Servicestext);
+	}
+
+	//This Method will navigate to Jobs section and will verify H1 tag Jobs is displayed
+	public void Jobs()
+	{
+		driver.findElement(By.id("navigation-toggle-button")).click();
+		driver.findElement(By.xpath("//*[@id='navigationMenuWrapper']/div/div[2]/ul/li[1]/a")).click();
+
+		String Jobstext =driver.findElement(By.xpath("//*[@id='container']/div[1]/h1")).getText();
+		System.out.println("H1 tag is displaying as"  + Jobstext);
+	}
+
+	//This Method will navigate to Contact section
+	public void Contact()
+	{
+		driver.findElement(By.id("contacticon")).click();
+
+	}
+
+
+	//This Method will Count office presents in different countries
+	public void CountOffices()
+	{
+		int TotalPresentInCurrentries = driver.findElements(By.className("contactcountry")).size();
+		System.out.println("Total present in countries is " + TotalPresentInCurrentries);
+
+		int i=0;
+		int EachCountryOffices=0;
+		int CountryOffices=0;
+		int TotalOffices=0;
+		
+		do{
+			TotalOffices=CountryOffices;
+		
+			
+			List<WebElement> allElements = driver.findElements(By.xpath("//*[@id='contactbox']/div/div["+i+"]/ul"));
+			 EachCountryOffices = allElements.size();
+			CountryOffices = EachCountryOffices +  TotalOffices;
+			for (WebElement element: allElements)
+			{
+				System.out.println("Name of the office is" + element.getText());
+			}
+			i++;
+		}while (TotalPresentInCurrentries==14);
+
+		System.out.println("Total offices is" + TotalOffices);
+
+
+	}                                   
+
+
+	// Run all the above given methods
+	@Test
+	public void runtest()
+	{
+		// Launch IE browser
+		LaunchIEBrowser();
+		// Go to Latest News section and verify latest news section is displayed
+		LatestNews();
+		// Go to cases section and verify cases section is displayed
+		Cases();
+		// Go to Services section and verify Services section is displayed
+		Services();
+		// Go to Jobs section and verify Jobs section is displayed
+		Jobs();
+		// Go to Contact section 
+		Contact();
+		//  Count office presents in different countries
+		CountOffices();
+
+	}
+
+}
